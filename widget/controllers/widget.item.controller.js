@@ -4,7 +4,7 @@
   angular.module('couponPluginWidget')
     .controller('WidgetItemCtrl', ['$scope', 'DataStore', 'TAG_NAMES', 'LAYOUTS', '$sce', '$rootScope', 'Buildfire', 'ViewStack', 'UserData', 'PAGINATION', '$modal', '$timeout', '$location',
       function ($scope, DataStore, TAG_NAMES, LAYOUTS, $sce, $rootScope, Buildfire, ViewStack, UserData, PAGINATION, $modal, $timeout, $location) {
-        let WidgetItem = this;
+        var WidgetItem = this;
         $scope.showRedeemButton  =false;
         $scope.showItemRedeemed  =false;
         WidgetItem.listeners = {};
@@ -258,7 +258,7 @@
             UserData.insert(WidgetItem.redeemedItem.data, TAG_NAMES.COUPON_REDEEMED).then(successItem, errorItem);
           } else if (WidgetItem.currentLoggedInUser && WidgetItem.data.settings.toggleEmployeeCode == 'on'){
            
-            setTimeout(() => {
+            setTimeout(function (){
               Buildfire.spinner.hide()
             }, 500);
             ViewStack.push({
@@ -284,7 +284,7 @@
             WidgetItem.redeemCoupon(currentView.params.item, true);
           } else {
             WidgetItem.passcodeFailure = true
-            setTimeout(() => {
+            setTimeout(function () {
               WidgetItem.passcodeFailure = false
               $scope.$digest()
             }, 2000);
