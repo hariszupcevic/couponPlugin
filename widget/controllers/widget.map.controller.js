@@ -16,7 +16,7 @@
           skip: 0,
           filter: {
             "$and": [{
-              "$json.expiresOn": {$gte: WidgetMap.yesterdayDate}
+              "$json.expiresOn": { $gte: WidgetMap.yesterdayDate }
             },
             {
               "$json.startOn": { $lte: WidgetMap.todayDate }
@@ -59,8 +59,8 @@
         //Refresh items on pulling the tile bar
 
         buildfire.datastore.onRefresh(function () {
-          WidgetMap.init(function(err){
-              console.log(">>>>>>Refreshed map");
+          WidgetMap.init(function (err) {
+            console.log(">>>>>>Refreshed map");
           });
         });
 
@@ -76,24 +76,24 @@
         WidgetMap.getAllItems = function (filter) {
           Buildfire.spinner.show();
           var successAll = function (resultAll) {
-              console.log('GET ALL ITEMS',resultAll);
-              Buildfire.spinner.hide();
-              if (resultAll) {
-                resultAll.forEach(function (_item) {
-                  _item.data.distance = 0; // default distance value
-                });
-              }
+            console.log('GET ALL ITEMS', resultAll);
+            Buildfire.spinner.hide();
+            if (resultAll) {
+              resultAll.forEach(function (_item) {
+                _item.data.distance = 0; // default distance value
+              });
+            }
 
-              WidgetMap.locationData.items = resultAll;
+            WidgetMap.locationData.items = resultAll;
 
-              if (WidgetMap.currentLoggedInUser) {
-                WidgetMap.getSavedItems();
-                WidgetMap.getRedeemedCoupons();
-              }
-              else
-                WidgetMap.formatItems();
-                WidgetMap.refreshData += 1;
-            },
+            if (WidgetMap.currentLoggedInUser) {
+              WidgetMap.getSavedItems();
+              WidgetMap.getRedeemedCoupons();
+            }
+            else
+              WidgetMap.formatItems();
+            WidgetMap.refreshData += 1;
+          },
             errorAll = function (error) {
               Buildfire.spinner.hide();
               console.log("error getting items", error)
@@ -107,36 +107,36 @@
                 skip: 0,
                 filter: {
                   "$and": [{
-                    "$json.expiresOn": {$gte: WidgetMap.yesterdayDate}
+                    "$json.expiresOn": { $gte: WidgetMap.yesterdayDate }
                   },
                   {
                     "$json.startOn": { $lte: WidgetMap.todayDate }
-                  }, {"$json.location.coordinates": {$exists: true}}]
+                  }, { "$json.location.coordinates": { $exists: true } }]
                 }
               };
-              itemFilter = {'$json.SelectedCategories': {'$in': filter.categories}};
+              itemFilter = { '$json.SelectedCategories': { '$in': filter.categories } };
               searchOptions.filter.$and.push(itemFilter);
             } else {
               searchOptions = {
                 skip: 0,
                 filter: {
                   "$and": [{
-                    "$json.expiresOn": {$gte: WidgetMap.yesterdayDate}
+                    "$json.expiresOn": { $gte: WidgetMap.yesterdayDate }
                   },
                   {
                     "$json.startOn": { $lte: WidgetMap.todayDate }
-                  }, {"$json.location.coordinates": {$exists: true}}]
+                  }, { "$json.location.coordinates": { $exists: true } }]
                 }
               }
             }
 
-            if(filter.text){
-              var newValue=filter.text;
+            if (filter.text) {
+              var newValue = filter.text;
               if (newValue) {
                 newValue = newValue.trim();
                 if (newValue.indexOf(' ') !== -1) {
                   var searchTerm = newValue.split(' ');
-                  searchOptions.filter.$or=[];
+                  searchOptions.filter.$or = [];
                   searchOptions.filter.$or.push({
                     "$json.title": {
                       "$regex": searchTerm[0],
@@ -160,13 +160,13 @@
                   });
                 } else {
                   var searchTerm = newValue;
-                  searchOptions.filter.$or=[];
+                  searchOptions.filter.$or = [];
                   searchOptions.filter.$or.push({
                     "$json.title": {
                       "$regex": searchTerm,
                       "$options": "i"
                     }
-                  }, {"$json.summary": {"$regex": searchTerm, "$options": "i"}})
+                  }, { "$json.summary": { "$regex": searchTerm, "$options": "i" } })
                 }
               }
             }
@@ -237,10 +237,10 @@
           }
           $scope.isFetchedAllData = true;
         };
-        $scope.getRedeemedDateText=function(item){
-          if(item && item.redeemedOn) {
+        $scope.getRedeemedDateText = function (item) {
+          if (item && item.redeemedOn) {
             var redeemedDate = new Date(item.redeemedOn);
-            return "Redeemed  "+ redeemedDate.toDateString() + " at " + redeemedDate.getHours() + ":" + redeemedDate.getMinutes();
+            return "Redeemed  " + redeemedDate.toDateString() + " at " + redeemedDate.getHours() + ":" + redeemedDate.getMinutes();
           }
           else
             return "";
@@ -313,7 +313,9 @@
                   defaultView: "list",
                   distanceIn: "mi",
                   mapView: "show",
-                  filterPage: "show"
+                  filterPage: "show",
+                  toggleEmployeeCode: "off",
+                  employeeCode: 12345
                 }
               };
             }
@@ -341,16 +343,16 @@
             cb();
           }
             , error = function (err) {
-            Buildfire.spinner.hide();
-            WidgetMap.data = {design: {itemListLayout: LAYOUTS.itemListLayout[0].name}};
-            console.error('Error while getting data', err);
-            cb();
-          };
+              Buildfire.spinner.hide();
+              WidgetMap.data = { design: { itemListLayout: LAYOUTS.itemListLayout[0].name } };
+              console.error('Error while getting data', err);
+              cb();
+            };
           DataStore.get(TAG_NAMES.COUPON_INFO).then(success, error);
 
           // Fetch user location
 
-          if (typeof(Storage) !== "undefined") {
+          if (typeof (Storage) !== "undefined") {
             var userLocation = localStorage.getItem('user_location');
             if (userLocation) {
               WidgetMap.locationData.currentCoordinates = JSON.parse(userLocation);
@@ -452,11 +454,11 @@
         };
 
         WidgetMap.refreshLocation = function () {
-            globals.wasFinderClicked = true;
-            getGeoLocation();
+          globals.wasFinderClicked = true;
+          getGeoLocation();
         };
 
-        WidgetMap.init(function(){});
+        WidgetMap.init(function () { });
 
         var onUpdateCallback = function (event) {
           setTimeout(function () {
@@ -503,37 +505,37 @@
             GeoDistance.getDistance(WidgetMap.locationData.currentCoordinates, _items, WidgetMap.data.settings.distanceIn).then(function (result) {
               console.log('WidgetMap.locationData.currentCoordinates', WidgetMap.locationData.currentCoordinates);
 
-              var endIndex=WidgetMap.locationData.items.length;
+              var endIndex = WidgetMap.locationData.items.length;
               // var tempItem=_items;
-              var deleteItemArrayIndex=[];
+              var deleteItemArrayIndex = [];
 
               for (var _ind = 0; _ind < endIndex; _ind++) {
                 if (_items && _items[_ind]) {
                   _items[_ind].data.distance = (result.rows[0].elements[_ind].status != 'OK') ? -1 : result.rows[0].elements[_ind].distance.value;
 
                   if (WidgetMap.isFilterApplied && WidgetMap.filter.distanceRange) {
-                      var itemDistNo = result.rows[0].elements[_ind] && result.rows[0].elements[_ind].distance && result.rows[0].elements[_ind].distance.text && Number(result.rows[0].elements[_ind].distance.text.split(' ')[0].replace(/,/g,''));
-                      var distanceUnit = result.rows[0].elements[_ind] && result.rows[0].elements[_ind].distance && result.rows[0].elements[_ind].distance.text && result.rows[0].elements[_ind].distance.text.split(' ')[1];
-                      var filterDistMin = WidgetMap.filter.distanceRange.min;
-                      var filterDistMax = WidgetMap.filter.distanceRange.max;
-                      var sortFilterCond;
-                      if ((distanceUnit == 'km' && filterDistMax > 483) || (distanceUnit == 'mi' && filterDistMax > 300))
-                          sortFilterCond = (itemDistNo >= filterDistMin);
-                      else
-                          sortFilterCond = (itemDistNo >= filterDistMin && itemDistNo <= filterDistMax);
-                   // var sortFilterCond = (Number(_items[_ind].data.distance) >= WidgetMap.filter.distanceRange.min && Number(_items[_ind].data.distance) <= WidgetMap.filter.distanceRange.max);
+                    var itemDistNo = result.rows[0].elements[_ind] && result.rows[0].elements[_ind].distance && result.rows[0].elements[_ind].distance.text && Number(result.rows[0].elements[_ind].distance.text.split(' ')[0].replace(/,/g, ''));
+                    var distanceUnit = result.rows[0].elements[_ind] && result.rows[0].elements[_ind].distance && result.rows[0].elements[_ind].distance.text && result.rows[0].elements[_ind].distance.text.split(' ')[1];
+                    var filterDistMin = WidgetMap.filter.distanceRange.min;
+                    var filterDistMax = WidgetMap.filter.distanceRange.max;
+                    var sortFilterCond;
+                    if ((distanceUnit == 'km' && filterDistMax > 483) || (distanceUnit == 'mi' && filterDistMax > 300))
+                      sortFilterCond = (itemDistNo >= filterDistMin);
+                    else
+                      sortFilterCond = (itemDistNo >= filterDistMin && itemDistNo <= filterDistMax);
+                    // var sortFilterCond = (Number(_items[_ind].data.distance) >= WidgetMap.filter.distanceRange.min && Number(_items[_ind].data.distance) <= WidgetMap.filter.distanceRange.max);
                     if (!sortFilterCond) {
                       deleteItemArrayIndex.push(_ind);
                     }
-                    if(_ind==endIndex-1){
-                      for (var i = deleteItemArrayIndex.length -1; i >= 0; i--)
-                        _items.splice(deleteItemArrayIndex[i],1);
+                    if (_ind == endIndex - 1) {
+                      for (var i = deleteItemArrayIndex.length - 1; i >= 0; i--)
+                        _items.splice(deleteItemArrayIndex[i], 1);
                     }
                   }
 
                 }
               }
-                WidgetMap.refreshData += 1;
+              WidgetMap.refreshData += 1;
               //  WidgetMap.isFilterApplied=false;
             }, function (err) {
               console.error('distance err', err);
@@ -546,8 +548,8 @@
         };
 
         WidgetMap.openDetailsPage = function (coupon) {
-          buildfire.history.push('Item', { itemId : coupon.id });
-          if(coupon && coupon.id){
+          buildfire.history.push('Item', { itemId: coupon.id });
+          if (coupon && coupon.id) {
             ViewStack.push({
               template: 'Item',
               params: {
@@ -579,7 +581,7 @@
             //bind on refresh again
 
             buildfire.datastore.onRefresh(function () {
-              WidgetMap.init(function(err){
+              WidgetMap.init(function (err) {
                 console.log(">>>>>>Refreshed map");
               });
             });
