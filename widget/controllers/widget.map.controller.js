@@ -329,7 +329,9 @@
                 defaultView: "list",
                 distanceIn: "mi",
                 mapView: "show",
-                filterPage: "show"
+                filterPage: "show",
+                toggleEmployeeCode: "off",
+                employeeCode: 12345
               };
             }
             if (!WidgetMap.data.design.itemListLayout) {
